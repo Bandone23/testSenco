@@ -1,4 +1,4 @@
-package com.example.examplesenco.presentation.viewmodel
+package com.example.examplesenco.presentation.viewmodel.home
 
 import androidx.paging.PagingData
 import com.example.examplesenco.data.model.PokemonItem

@@ -1,4 +1,4 @@
-package com.example.examplesenco.presentation.screen
+package com.example.examplesenco.presentation.screen.home
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +13,12 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.examplesenco.data.model.PokemonItem
 
+
 @Composable
-fun PokemonList(pokemonPagingData: LazyPagingItems<PokemonItem>, modifier: Modifier = Modifier) {
+fun PokemonList(
+    pokemonPagingData: LazyPagingItems<PokemonItem>,
+    onPokemonClick: (String) -> Unit
+) {
     Log.d("PokemonList", "Item count: ${pokemonPagingData.itemCount}")
     LazyVerticalGrid(
         columns = GridCells.Fixed(2), // 🔹 2 columnas en la cuadrícula
@@ -28,7 +32,7 @@ fun PokemonList(pokemonPagingData: LazyPagingItems<PokemonItem>, modifier: Modif
         items(pokemonPagingData.itemCount) { index ->
             val pokemon = pokemonPagingData[index]
             if (pokemon != null) {
-                PokemonItem(pokemon,"")
+                PokemonItemS(pokemon,"", onClick = { onPokemonClick(pokemon.name) })
             }
         }
     }

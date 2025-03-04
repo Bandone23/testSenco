@@ -81,6 +81,10 @@ dependencies {
     implementation(libs.retrofit2.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.accompanist.pager)
+    implementation(libs.navigation.compose)
 
-
+    implementation(libs.androidx.datastore.preferences)
 }
+
+

@@ -1,6 +1,7 @@
 package com.example.examplesenco.data.remote
 
 import com.example.examplesenco.data.model.PokemonResponse
+import com.example.examplesenco.data.model.description.PokemonSpeciesResponse
 import com.example.examplesenco.data.model.detail.PokemonDetailResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -15,4 +16,7 @@ interface ApiService {
 
     @GET("pokemon/{name}")
     suspend fun getSearchPokemon(@Path("name") name: String): Response<PokemonDetailResponse>
+
+    @GET("pokemon-species/{name}")
+    suspend fun getPokemonSpecies(@Path("name") name: String): Response<PokemonSpeciesResponse>
 }

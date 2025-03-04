@@ -4,16 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.examplesenco.presentation.screen.PokemonListScreen
-import com.example.examplesenco.presentation.viewmodel.PokemonViewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.examplesenco.presentation.viewmodel.home.PokemonViewModel
+import com.example.examplesenco.presentation.viewmodel.detail.PokemonDetailViewModel
+import com.example.examplesenco.presentation.viewmodel.favorites.FavoritePokemonViewModel
+import com.example.examplesenco.ui.navigation.AppNavGraph
 import com.example.examplesenco.ui.theme.ExampleSencoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,14 +19,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
+            val pokemonViewModel: PokemonViewModel = hiltViewModel()
+            val pokemonDetailViewModel: PokemonDetailViewModel = hiltViewModel()
+            val favoritePokemonViewModel: FavoritePokemonViewModel = hiltViewModel()
+
             ExampleSencoTheme {
-                val viewModel: PokemonViewModel = hiltViewModel()
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PokemonListScreen(
-                        viewModel = viewModel,
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavGraph(
+                    navController = navController,
+                    pokemonViewModel = pokemonViewModel,
+                    pokemonDetailViewModel = pokemonDetailViewModel,
+                    favoritePokemonViewModel = favoritePokemonViewModel
+                )
             }
         }
     }

@@ -1,6 +1,7 @@
-package com.example.examplesenco.presentation.screen
+package com.example.examplesenco.presentation.screen.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,14 +27,15 @@ import com.example.examplesenco.utils.getPokemonIdFromUrl
 import com.example.examplesenco.utils.getPokemonImageUrl
 
 @Composable
-fun PokemonItem(pokemon: PokemonItem,pokemonType: String) {
+fun PokemonItemS(pokemon: PokemonItem,pokemonType: String ,onClick: () -> Unit) {
     val pokemonId = getPokemonIdFromUrl(pokemon.url)
     val imageUrl = getPokemonImageUrl(pokemonId)
     val backgroundColor = getColorForPokemonType(pokemonType)
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+        .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {

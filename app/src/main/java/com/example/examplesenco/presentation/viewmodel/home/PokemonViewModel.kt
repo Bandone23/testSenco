@@ -1,4 +1,4 @@
-package com.example.examplesenco.presentation.viewmodel
+package com.example.examplesenco.presentation.viewmodel.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
