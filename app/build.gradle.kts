@@ -85,6 +85,8 @@ dependencies {
     implementation(libs.navigation.compose)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.accompanist.placeholder)
+    implementation(libs.accompanist.navigation.animation)
 }
 
 

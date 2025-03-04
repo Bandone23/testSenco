@@ -23,8 +23,7 @@ class PokemonPagingSource(
 
             val response = apiService.getPokemon(offset = page * 20, limit = 20)
             if (!response.isSuccessful || response.body() == null) {
-
-                return LoadResult.Error(Exception("API error"))
+                throw Exception("Error ${response.code()}: ${response.message()}")
             }
             val pokemons = response.body()?.results ?: emptyList()
 
@@ -35,6 +34,7 @@ class PokemonPagingSource(
                 nextKey = if (pokemons.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {
+            Log.d("PokemonPagingSource", "Error caught: ${e.message}")
             LoadResult.Error(e)
         }
     }

@@ -15,8 +15,6 @@ class PokemonDetailRepositoryImpl @Inject constructor(
 ) : PokemonDetailRepository {
     override fun getPokemonDetails(name: String): Flow<Result<PokemonDetailResponse>> = flow {
         try {
-            emit(Result.success(getEmptyPokemonDetail())) // Estado inicial vacío
-
             val response = apiService.getSearchPokemon(name)
             val speciesResponse = apiService.getPokemonSpecies(name) // 🔥 Obtener descripción
 
@@ -35,19 +33,4 @@ class PokemonDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getEmptyPokemonDetail() = PokemonDetailResponse(
-        id = 0,
-        name = "Unknown",
-        sprites = Sprites(
-            frontImage = "",
-            backImage = "",
-            frontShiny = "",
-            backShiny = "",
-            other = OtherSprites(
-                officialArtwork = OfficialArtwork(frontImage = "")
-            )
-        ),
-        types = emptyList(),
-        description = "No description available"
-    )
 }
