@@ -23,14 +23,27 @@ class PokemonViewModel @Inject constructor(
     private val _pokemonState = MutableStateFlow<PokemonViewState>(PokemonViewState.Loading)
     val pokemonState: StateFlow<PokemonViewState> = _pokemonState.asStateFlow()
 
+    init {
+        processIntent(PokemonIntent.LoadPokemons)
+    }
 
-     fun fetchPokemonList() {
+    fun processIntent(intent: PokemonIntent) {
+        when (intent) {
+            is PokemonIntent.LoadPokemons -> {
+                fetchPokemonList()
+            }
+        }
+    }
+
+    fun fetchPokemonList() {
         viewModelScope.launch {
             getPokemonListUseCase()
-                .cachedIn(viewModelScope) // Optimiza el flujo para recomposiciones en Compose
+                .cachedIn(viewModelScope)
                 .catch { e ->
-                    Log.d("PokemonViewModel", "Error in ViewModel: ${e.message}")
-                    _pokemonState.value = PokemonViewState.Error(e.message ?: "Error desconocido") // 🔥 Captura el error
+                    Log.e("PokemonViewModel", "Error in ViewModel: ${e.message}", e)
+                    _pokemonState.value = PokemonViewState.Error(
+                        e.message ?: "Error desconocido al cargar Pokémon"
+                    )
                 }
                 .collectLatest { pagingData ->
                     _pokemonState.value = PokemonViewState.Success(flowOf(pagingData))

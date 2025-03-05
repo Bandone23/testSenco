@@ -1,27 +1,31 @@
 package com.example.examplesenco.di
 
-import com.example.examplesenco.data.repository.PokemonDetailRepositoryImpl
-import com.example.examplesenco.data.repository.PokemonRepositoryImpl
-import com.example.examplesenco.domain.repository.PokemonDetailRepository
+import android.content.Context
+import android.net.ConnectivityManager
+import com.example.examplesenco.data.local.dao.PokemonDao
+import com.example.examplesenco.data.remote.ApiService
+import com.example.examplesenco.data.repository.datasource.PokemonSourceFactory
 import com.example.examplesenco.domain.repository.PokemonRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
-    @Binds
-    @Singleton
-    abstract fun bindPokemonRepository(
-        impl: PokemonRepositoryImpl
-    ): PokemonRepository
+object RepositoryModule {
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindPokemonDetailRepository(
-        impl: PokemonDetailRepositoryImpl
-    ): PokemonDetailRepository
+    fun providePokemonRepository(
+        apiService: ApiService,
+        pokemonDao: PokemonDao,
+        @ApplicationContext context: Context
+    ): PokemonRepository {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return PokemonSourceFactory(apiService, pokemonDao, connectivityManager)
+    }
 }

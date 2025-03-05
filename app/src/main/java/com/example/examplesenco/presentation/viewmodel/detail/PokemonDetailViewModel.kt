@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,41 +29,53 @@ class PokemonDetailViewModel  @Inject constructor(
 
     fun fetchPokemonDetails(name: String) {
         viewModelScope.launch {
-            getPokemonDetailsUseCase(name)
-                .collectLatest { result ->
-                    _pokemonDetailState.value = when {
-                        result.isSuccess -> {
-                            val pokemon = result.getOrNull()!!
+            // Combina ambos flujos de manera concurrente
+            launch {
+                getPokemonDetailsUseCase(name)
+                    .catch { error ->
+                        _pokemonDetailState.value = PokemonDetailState.Error(
+                            error.message ?: "Unknown error"
+                        )
+                    }
+                    .collect { result ->
+                        result.onSuccess { pokemon ->
                             val primaryType = pokemon.types.firstOrNull()?.type?.name ?: "normal"
                             val images = getPokemonImages(pokemon)
                             val description = pokemon.description
 
-                            PokemonDetailState.Success(pokemon, primaryType, images, description)
+                            _pokemonDetailState.value = PokemonDetailState.Success(
+                                pokemon,
+                                primaryType,
+                                images,
+                                description
+                            )
+                        }.onFailure { error ->
+                            _pokemonDetailState.value = PokemonDetailState.Error(
+                                error.message ?: "Unknown error"
+                            )
                         }
-                        else -> PokemonDetailState.Error(result.exceptionOrNull()?.message ?: "Unknown error")
                     }
-                }
-        }
+            }
 
-        // 🔥 Asegurar que isFavorite es recolectado correctamente
-        viewModelScope.launch {
-            favoritesManager.isFavorite(name).collect { isFav ->
-                _isFavorite.value = isFav
+
+            launch {
+                favoritesManager.isFavorite(name)
+                    .collect { isFav ->
+                        _isFavorite.value = isFav
+                    }
             }
         }
     }
 
     private fun getPokemonImages(pokemon: PokemonDetailResponse): List<String> {
         return listOfNotNull(
-            pokemon.sprites!!.other.officialArtwork.frontImage,
-            pokemon.sprites.frontImage,
-            pokemon.sprites.backImage,
-            pokemon.sprites.frontShiny,
-            pokemon.sprites.backShiny,
-
+            pokemon.sprites?.other?.officialArtwork?.frontImage,
+            pokemon.sprites?.frontImage,
+            pokemon.sprites?.backImage,
+            pokemon.sprites?.frontShiny,
+            pokemon.sprites?.backShiny
         )
     }
-
 
     fun toggleFavorite(name: String) {
         viewModelScope.launch {

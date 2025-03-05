@@ -87,6 +87,11 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.accompanist.placeholder)
     implementation(libs.accompanist.navigation.animation)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    implementation(libs.room.paging)
+    kapt(libs.room.compiler)
 }
 
 

@@ -7,6 +7,6 @@ sealed class PokemonDetailState {
     data class Success(  val data: PokemonDetailResponse,
                          val type: String,
                          val images: List<String>,
-                         val description: String) : PokemonDetailState()
+                         val description: String?) : PokemonDetailState()
     data class Error(val message: String) : PokemonDetailState()
 }

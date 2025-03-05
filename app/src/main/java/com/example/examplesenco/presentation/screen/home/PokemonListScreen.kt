@@ -20,11 +20,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.LoadState
 import com.example.examplesenco.presentation.screen.shimmer.ShimmerPokemonList
+import com.example.examplesenco.presentation.viewmodel.home.PokemonIntent
 import com.example.examplesenco.presentation.viewmodel.home.PokemonViewModel
 import com.example.examplesenco.presentation.viewmodel.home.PokemonViewState
 import kotlinx.coroutines.launch
+import androidx.paging.compose.collectAsLazyPagingItems
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +42,7 @@ fun PokemonListScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchPokemonList()  // Llama la función para obtener los pokemones
+        viewModel.processIntent(PokemonIntent.LoadPokemons)  // Llama a la acción de cargar los Pokémon
     }
     Scaffold(
         topBar = {
@@ -55,35 +58,81 @@ fun PokemonListScreen(
                 snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-    when (pokemonState) {
-        is PokemonViewState.Loading -> {
-            ShimmerPokemonList(modifier)
-        }
+            when (val currentState = pokemonState) {
+                is PokemonViewState.Loading -> {
+                    ShimmerPokemonList(modifier)
+                }
 
-        is PokemonViewState.Success -> {
-            val pokemonFlow = (pokemonState as PokemonViewState.Success).data
-            val pokemonPagingData = pokemonFlow.collectAsLazyPagingItems()
+                is PokemonViewState.Success -> {
+                    val pokemonFlow = currentState.data
+                    val pokemonPagingData = pokemonFlow.collectAsLazyPagingItems()
 
-            if (pokemonPagingData.itemCount == 0) {
-                LoadingScreen()
-            } else {
-                PokemonList(pokemonPagingData, onPokemonClick)
-            }
-        }
+                    // Manejar errores de carga de páginas
+                    val loadState = pokemonPagingData.loadState
 
-        is PokemonViewState.Error -> {
-            val errorMessage = (pokemonState as PokemonViewState.Error).message
-            LaunchedEffect(errorMessage) {
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = errorMessage,
-                        duration = SnackbarDuration.Short
-                    )
+                    // Manejar error de carga inicial
+                    when (loadState.refresh) {
+                        is LoadState.Error -> {
+                            val errorMessage = (loadState.refresh as LoadState.Error).error.message
+                                ?: "Error desconocido al cargar"
+
+                            LaunchedEffect(errorMessage) {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = errorMessage,
+                                        duration = SnackbarDuration.Long
+                                    )
+                                }
+                            }
+
+                            ErrorScreen(errorMessage, modifier = modifier)
+                        }
+
+                        is LoadState.Loading -> {
+                            ShimmerPokemonList(modifier)
+                        }
+
+                        is LoadState.NotLoading -> {
+                            if (pokemonPagingData.itemCount == 0) {
+                                ErrorScreen("No se encontraron Pokémon", modifier = modifier)
+                            } else {
+                                PokemonList(pokemonPagingData, onPokemonClick)
+                            }
+                        }
+                    }
+
+                    // Manejar errores de carga de páginas adicionales
+                    when (loadState.append) {
+                        is LoadState.Error -> {
+                            val errorMessage = (loadState.append as LoadState.Error).error.message
+                                ?: "Error al cargar más Pokémon"
+
+                            LaunchedEffect(errorMessage) {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = errorMessage,
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+
+                is PokemonViewState.Error -> {
+                    val errorMessage = currentState.message
+                    LaunchedEffect(errorMessage) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = errorMessage,
+                                duration = SnackbarDuration.Long
+                            )
+                        }
+                    }
+                    ErrorScreen(errorMessage, modifier = modifier)
                 }
             }
-            ErrorScreen(errorMessage, modifier = modifier)
-        }
-    }
         }
     }
 }
