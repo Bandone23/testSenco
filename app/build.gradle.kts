@@ -92,6 +92,13 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
     kapt(libs.room.compiler)
+
+    // Testing
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.androidx.arch.core.testing)
+
 }
 
 

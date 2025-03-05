@@ -25,14 +25,11 @@ class LocalPokemonPagingSource (
             val page = params.key ?: 0
             val pageSize = params.loadSize
 
-            // Obtener todos los Pokémon de la base de datos
             val pokemonEntities = pokemonDao.getAllPokemons().first()
 
-            // Aplicar paginación manual
             val startPosition = page * pageSize
             val endPosition = minOf((page + 1) * pageSize, pokemonEntities.size)
 
-            // Asegurarse de que no nos salimos de los límites
             if (startPosition >= pokemonEntities.size) {
                 return LoadResult.Page(
                     data = emptyList(),
@@ -41,10 +38,7 @@ class LocalPokemonPagingSource (
                 )
             }
 
-            // Tomar la parte correspondiente a esta página
             val paginatedEntities = pokemonEntities.subList(startPosition, endPosition)
-
-            // Convertir las entidades a modelos de dominio
             val items = paginatedEntities.map { entity ->
                 PokemonItem(
                     name = entity.name,

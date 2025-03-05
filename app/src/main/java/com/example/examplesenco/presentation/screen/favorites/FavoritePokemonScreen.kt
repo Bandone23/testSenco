@@ -58,7 +58,7 @@ fun FavoritePokemonScreen(
                     items(favoritePokemonList) { pokemonUrl ->
                         FavoritePokemonItem(
                             pokemonName = pokemonUrl,
-                            pokemonUrl = getPokemonImageUrl(getPokemonIdFromUrl(pokemonUrl)), // 🔥 Extraer ID desde la URL
+                            pokemonUrl = getPokemonImageUrl(getPokemonIdFromUrl(pokemonUrl)),
                             onClick = { onPokemonClick(pokemonUrl) }
                         )
                     }

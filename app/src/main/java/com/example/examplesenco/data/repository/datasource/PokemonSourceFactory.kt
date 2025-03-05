@@ -41,7 +41,6 @@ class PokemonSourceFactory @Inject constructor(
                 pokemonDao = pokemonDao
             ),
             pagingSourceFactory = {
-                // Si no hay conexión, usa la base de datos local
                 if (!isNetworkAvailable()) {
                     Log.d("PokemonRepository", "Using local data source")
                     LocalPokemonPagingSource(pokemonDao)

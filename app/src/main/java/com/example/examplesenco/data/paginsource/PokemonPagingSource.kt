@@ -23,7 +23,6 @@ class PokemonPagingSource(
         return try {
             val response = apiService.getPokemon(offset = page * 20, limit = 20)
 
-            // Mejorar manejo de errores
             when {
                 !response.isSuccessful -> {
                     val errorMessage = "HTTP error ${response.code()}: ${response.message()}"

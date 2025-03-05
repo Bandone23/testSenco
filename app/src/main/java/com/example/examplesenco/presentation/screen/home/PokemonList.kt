@@ -21,13 +21,13 @@ fun PokemonList(
 ) {
     Log.d("PokemonList", "Item count: ${pokemonPagingData.itemCount}")
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2), // 🔹 2 columnas en la cuadrícula
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 36.dp, start = 8.dp, end = 8.dp), // 🔹 Añadir padding arriba
-        contentPadding = PaddingValues(8.dp), // 🔹 Espaciado dentro de la grilla
-        horizontalArrangement = Arrangement.spacedBy(8.dp), // 🔹 Espaciado entre columnas
-        verticalArrangement = Arrangement.spacedBy(8.dp) // 🔹 Espaciado entre filas
+            .padding(top = 36.dp, start = 8.dp, end = 8.dp),
+        contentPadding = PaddingValues(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(pokemonPagingData.itemCount) { index ->
             val pokemon = pokemonPagingData[index]

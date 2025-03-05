@@ -82,7 +82,7 @@ fun PokemonDetailContent(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = getColorForPokemonType(type) // 🔥 Color dinámico por tipo
+                    containerColor = getColorForPokemonType(type)
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -92,7 +92,7 @@ fun PokemonDetailContent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(getColorForPokemonType(type))
-                .padding(innerPadding) // ✅ Padding seguro para evitar sobreposición con la barra
+                .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

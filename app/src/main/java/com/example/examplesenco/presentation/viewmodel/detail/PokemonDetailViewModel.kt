@@ -1,6 +1,5 @@
 package com.example.examplesenco.presentation.viewmodel.detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.examplesenco.data.local.FavoritesManager
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +27,6 @@ class PokemonDetailViewModel  @Inject constructor(
 
     fun fetchPokemonDetails(name: String) {
         viewModelScope.launch {
-            // Combina ambos flujos de manera concurrente
             launch {
                 getPokemonDetailsUseCase(name)
                     .catch { error ->

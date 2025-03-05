@@ -48,7 +48,6 @@ class PokemonRemoteMediator(
                 pokemonDao.clearAll()
             }
 
-            // Convertir PokemonItem a PokemonEntity para guardar
             val pokemonEntities = pokemons.map { pokemonItem ->
                 PokemonEntity(
                     name = pokemonItem.name,

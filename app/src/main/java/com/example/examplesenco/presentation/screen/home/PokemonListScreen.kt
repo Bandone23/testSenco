@@ -42,7 +42,7 @@ fun PokemonListScreen(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewModel.processIntent(PokemonIntent.LoadPokemons)  // Llama a la acción de cargar los Pokémon
+        viewModel.processIntent(PokemonIntent.LoadPokemons)
     }
     Scaffold(
         topBar = {
@@ -67,10 +67,8 @@ fun PokemonListScreen(
                     val pokemonFlow = currentState.data
                     val pokemonPagingData = pokemonFlow.collectAsLazyPagingItems()
 
-                    // Manejar errores de carga de páginas
                     val loadState = pokemonPagingData.loadState
 
-                    // Manejar error de carga inicial
                     when (loadState.refresh) {
                         is LoadState.Error -> {
                             val errorMessage = (loadState.refresh as LoadState.Error).error.message
@@ -101,7 +99,6 @@ fun PokemonListScreen(
                         }
                     }
 
-                    // Manejar errores de carga de páginas adicionales
                     when (loadState.append) {
                         is LoadState.Error -> {
                             val errorMessage = (loadState.append as LoadState.Error).error.message
